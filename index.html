@@ -1,0 +1,326 @@
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso ao Filme</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #121212;
+            color: white;
+            flex-direction: column;
+        }
+        
+        
+        .telegram-link {
+            text-decoration: none;
+            text-align: center;
+            display: block;
+        }
+        .telegram-link img {
+            width: 60px;
+            height: 60px;
+            transition: 0.3s;
+            border: none;
+            margin-bottom: 10px;
+        }
+        .telegram-link img:hover {
+            transform: scale(1.1);
+        }
+        .telegram-container {
+            background: #1e1e1e;
+            padding: 20px 30px;
+            margin-bottom: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+        .telegram-container p {
+            font-size: 18px;
+            font-weight: normal;
+            color: #f7a800;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+        .container {
+            text-align: center;
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 450px;
+        }
+        h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #bbb;
+        }
+        button {
+            padding: 15px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+        .btn-ad {
+            background-color: #ff9800;
+            color: white;
+        }
+        .btn-ad:hover {
+            background-color: #e68900;
+        }
+        .btn-film {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-film:hover {
+            background-color: #3e8e41;
+        }
+        .btn-film:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+        .note {
+            font-size: 14px;
+            margin-top: 15px;
+            color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <div class="telegram-container">
+        <a href="https://t.me/+K1Sn1G5aq_5kMjEx" class="telegram-link" target="_blank" title="Clique para entrar no nosso grupo do Telegram!">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Grupo de Filmes & Séries">
+            <p>Entre no nosso bot do Telegram!</p>
+        </a>
+    </div>
+    <div class="container">
+        <h2>Para assistir ao filme, clique primeiro no anúncio para desbloquear.</h2>
+        <button id="btnAnuncio" class="btn-ad" onclick="openAdLink()">🔗 Abrir Anúncio</button>
+        <br>
+        <button id="btnOutroLink" class="btn-film" onclick="openAnotherLink()" disabled>🎬 Assistir Filme</button>
+        <p class="note">Após abrir o anúncio, feche a página e clique no botão acima para assistir.</p>
+    </div>
+    
+    <script>
+        // Função para obter o ID do filme da URL
+        function getParameterByName(name, url = window.location.href) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        // ID do filme da URL
+        const filmeId = getParameterByName('filme');
+
+        // links dos filmes
+        const filmes = {
+             '1': 'https://drive.google.com/file/d/1J1CFY7k8-7yZ-BQLzQxHXb2q1ZCIZYyS/view', // Homem de Ferro
+            '2': 'https://drive.google.com/file/d/1V3SRC6Qck_qGgFMHGqjQxjMHsR2mvg5V/view', // Homem de Ferro 2
+            '3': 'https://drive.google.com/file/d/bc1qpjq2u4vwnyxe3u0flg8hfp3c8mfmd9f38ydu07/view', // Homem de Ferro 3
+            '4': 'https://drive.google.com/file/d/1jbuxpNhwaD22UeyIyKvYLDm9P8lBpDe7/view', // A ligação (2020)
+            '5': 'https://drive.google.com/file/d/1-N3pAca_gezuDSM7HEVrZrvu9o-j8tQy/view?usp=drivesdk', // Todo Mundo Em Pânico 1
+            '6': 'https://drive.google.com/file/d/1-c6LgccZWwuTGAPz0P6ThagbdSojC3av/view?usp=drivesdk', // Todo Mundo Em Pânico 2
+            '7': 'https://drive.google.com/file/d/1-lDjFDjWQGhRX82gqNDvwjGvjSD1P1A2/view?usp=drivesdk', // Todo Mundo Em Pânico 3
+            '8': 'https://drive.google.com/file/d/1-mqaB-UPbcnPKYyMiVnQfrasdjwyX49J/view?usp=drivesdk', // Todo Mundo Em Pânico 4
+            '9': 'https://drive.google.com/file/d/1B21f5BnL3YE71T2PQbvuJqrUgFSoH-_L/view', // A noiva cadáver
+            '10': 'https://drive.google.com/file/d/1xfE9GnpKT8G8HnpUGK7mtCJSl6aaM5Wb/view', // Garota infernal
+            '11': 'https://drive.google.com/file/d/0B61IslpS_OonajJPcnk4OU9FVG8/view?resourcekey=0-M_X8yQz3uH5nPuMkHWJWTw', // O diabo veste Prada
+            '12': 'https://drive.google.com/file/d/1XEGlgvQZxfd5tvHwp4Y6VgLrT0DAScgO/view', // Cisne Negro
+            '13': 'https://drive.google.com/file/d/1xWGVp9Aq-cnPnQD_VRIPrUBG_scEOb2r/view', // 3096 Dias de Cativeiro
+            '14': 'https://drive.google.com/drive/folders/1-BzjwUh7tGcs0AdvwtWI03SAw7jENL66', // Olhos famintos 1
+            '15': 'https://drive.google.com/file/d/1BbNKyCI7c3MVo5mCCBCxj207AmBtmVj7/view', // Olhos famintos 2
+            '16': 'https://drive.google.com/file/d/12ksVCZsKyrrd4jbvawSIg6JuUc-zhLV7/view', // O exorcismo de Emily Rose
+            '17': 'https://drive.google.com/file/d/1Dy5kuSYIS5HMtDkc-bPy9C7cmJLOVFNG/view', // Corra!
+            '18': 'https://drive.google.com/file/d/1xIyCKn7X0MsByAW2zSuU8cK0wwLOOQjs/view', // Bruna Surfistinha
+            '19': 'https://drive.google.com/file/d/1l8AfvZnHDJ7eUnhHkNrzSXuyWYh7XG1B/view', // Whiplash – Em Busca da Perfeição
+            '20': 'https://drive.google.com/file/d/1EO_7O7QBn4pTkMLfLxEKZ1yvF4kVgGPl/view', // A casa de cera
+            '21': 'https://drive.google.com/file/d/16CUXakoALnUryCuumnmrpQ5Rd-VWFXXQ/view', // Carrie, a estranha (2002)
+            '22': 'https://drive.google.com/file/d/1H4C4ArdgO4rCHLn4xCQwPdiZZ_X2fuwz/view', // Carrie, a estranha (1976)
+            '23': 'https://drive.google.com/file/d/1EZ-sz44n0iV5rSpXPPKBDmYbl76S9lx1/view', // Escritores da liberdade
+            '24': 'https://drive.google.com/file/d/1z-AvEuqafjGBubel2tpmVXHSibqbcz1_/view', // O silêncio dos inocentes
+            '25': 'https://drive.google.com/file/d/1U45MCJZcKoL5wOhY9AgLNCqG49frxhRZ/view', // A Órfã
+            '26': 'https://drive.google.com/file/d/1bBw-AMW9ZiexqxKXcBvlYz-msDgXK8CD/view', // Burlesque
+            '27': 'https://drive.google.com/file/d/1GvJl32OBTczMzO7n8KzhVfDlh6SQu_wh/view', // Sobrenatural
+            '28': 'https://drive.google.com/file/d/1CBS3JbKCGE8qMHnHUt0tU0n4JcO3CHBk/view', // A Fuga Das Galinhas
+            '29': 'http://drive.google.com/file/d/17Ksz4eogdKz9L2EnS3ftt7Fqm6kNLCxr/view', // Closer - Perto demais
+            '30': 'https://drive.google.com/file/d/14azRDgeWwxDqS-qMiiyemVEE6nuB5Gey/view', // As Fitas de Poughkeepsie
+            '31': 'https://drive.google.com/file/d/1wiNXJnc6k3IGO3-USS1j2o-rni2P8eWU/view', // Quem quer ser um milionário?
+            '32': 'https://drive.google.com/file/d/1yDZNgjoIgaGhOHwzUzv9D44lniBetqmW/view', // Relatos Selvagens
+            '33': 'https://drive.google.com/file/d/1grDF05PMay-fxzaOJ4hKqMowaJIlwQHp/view', // A Filha Do Pastor (2010)
+            '34': 'https://drive.google.com/file/d/1Lue2rusBDKWk3A2O4nnLkk-WWek5Ne2d/view', // O bebê de Rosemary
+            '35': 'https://drive.google.com/file/d/10D2EDAiPzpa33gLPE5cJSTLZEXwtLynl/view', // Memórias de uma gueixa
+            '36': 'https://drive.google.com/file/d/1BTRwhusYJLMaewojTwAvEWViOPqyXNrH/view', // CAM
+            '37': 'https://drive.google.com/file/d/1BaE0J1mr8tsspdY-RK_8x40ULEOwAYNT/view', // A Nova Cinderela (2004)
+            '38': 'https://drive.google.com/file/d/1IrbfixeCSNgNEnVSS7G4z-fgrdHN7wlE/view', // Martyrs (2008)
+            '39': 'https://drive.google.com/file/d/1NOXmMFsgpr2O1hiAZ4B7eXHnRkwqxOQ8/view', // Demônio De Néon
+  '40': 'https://drive.google.com/file/d/18clESWcq2_7h6DfQyK6dMJ6dvKR8ICp7/view', // Shrek 2
+  '41': 'https://drive.google.com/file/d/18Z4qBKfYQTXVd2U16rpXktk1UoqdZBMe/view', // Shrek
+  '42': 'https://drive.google.com/file/d/1L_y_Cufqde0VRrZyYmnvQXMAQuXlBc4F/view', // O Corcel Indomável
+  '43': 'https://drive.google.com/file/d/1ew1CQU83tjUNVdw6BlP2MKKPei-zBSH1/view', // O Caminho para El Dorado
+  '44': 'https://drive.google.com/file/d/1tdfxkmQ4pDn1QjHGMOKqjlJaMxWlDmtJ/view', // O Príncipe Do Egito
+  '45': 'https://drive.google.com/file/d/1J5YVhVsNlnWHegTJc2u7CBP_uVWltCJj/view', // Formiguinhaz
+  '46': 'https://onedrive.live.com/?authkey=%21AN7wIq%2Dcq2A0I5g&id=EB88ADC849A9BFC4%2115352&cid=EB88ADC849A9BFC4&parId=root&parQt=sharedby&o=OneUp', // A morte do demônio
+  '47': 'https://drive.google.com/file/d/1MmPTunsrW1HZv4F4Jec5hR1OkGM5AQON/view', // A BALEIA
+  '48': 'https://drive.google.com/file/d/1YVfAQgpEaGlBg-uzEtKocMBU_BwsfrpZ/view', // Tudo em Todo Lugar
+  '49': 'https://drive.google.com/file/d/1F5iJjVkfHO3VCpvwwCQ7-760k8E9-5Pt/view', // Estrondo da Terra
+  '50': 'https://drive.google.com/file/d/171L2aqtvu4bdGk5mTOXTbSZwyWkqQj9g/view', // Barbie Fairytopia em A Mágia do Arco-Íris
+  '51': 'https://drive.google.com/file/d/1PUu8JshUbPltX-geWBzglUIYD8WLo35o/view', // O Diário Da Barbie
+  '52': 'https://drive.google.com/file/d/17X7Hw1j1SZg5V5VaXSCUNssqrdsNcp-b/view', // Barbie, a estrela do Rock
+  '53': 'https://drive.google.com/file/d/14A5JswqTfSb6eiGsHFooUTFR8JlXcTaK/view', // Barbie Dreamtopia
+  '54': 'https://drive.google.com/file/d/1NGb5Xs0b5im1Vt6pqBzbccGnxvrp0e-k/view', // Barbie e Suas Irmãs Em Busca Dos Cachorrinhos
+  '55': 'https://drive.google.com/file/d/1rRUBikZPqQv33wV0OQyRDNCJopPBWRkJ/view', // Barbie em A Pequena Polegarzinha
+  '56': 'https://drive.google.com/file/d/1WL0ErFgv065vGVaaEi0ZzBB_v4S6sFrn/view', // Barbie em A Canção de Natal
+  '57': 'https://drive.google.com/file/d/1Y57SJin7GnQRml9ny5Zj2YAQH5Ct7dre/view', // Barbie e o Segredo das Fadas
+  '58': 'https://drive.google.com/file/d/1NGaJ5T5sbmLqM7MJVic5LMED7JdGKlBq/view', // Barbie Escola de Princesas
+  '59': 'https://drive.google.com/file/d/1G9Kr6LGxJoH70GOn9oNfn_WERgX-VN21/view', // Barbie em Vida de Sereia
+  '60': 'https://drive.google.com/file/d/16GD25FSSpLTA-lQV_LhwEMjs0zaiTZvg/view', // Barbie em uma Aventura Nas Estrelas
+  '61': 'https://drive.google.com/file/d/1_bRtrMMAIWB4x5rbXizq1uRyMzaNR5zO/view', // Barbie e os Golfinhos Mágicos
+  '62': 'https://drive.google.com/file/d/1FSWIMoXJtEH7DOYCuQ0RwN1RlXnYnUou/view', // Barbie e As Três Mosqueteiras
+  '63': 'https://drive.google.com/file/d/1EaOba2dc5aNGHMRhdA7jH4JoPgRHCGRv/view', // Barbie e o Castelo de Diamante
+  '64': 'https://drive.google.com/file/d/1G0i0mBkWgCXSNBrHZkwRJVvwSa0nyWW_/view', // Barbie Lago dos Cisnes
+  '65': 'https://drive.google.com/file/d/1FuwltM2t1LMVAIzpZRXy_KZ3drhP2lBs/view', // Barbie Rapunzel
+  '66': 'https://drive.google.com/file/d/1qPwnmigs1IXMunoKsC1Ec8gUIgyAl_MV/view', // Barbie a princesa e a plebeia
+  '67': 'https://drive.google.com/file/d/1F_7UNYjPj5mhmx67Bn9B-X0wB9GkwAvf/view', // Barbie e a Magia de Aladus
+  '68': 'https://drive.google.com/file/d/1FV-EtnNgZ-LMohVIjb28ANIw5hUtLCIK/view', // Barbie a Princesa da Ilha
+  '69': 'https://drive.google.com/file/d/1Fw519y6XMkdxQ-ZUUwHSBn4vyq0A7H0I/view', // Barbie e o Quebra-Nozes
+  '70': 'https://drive.google.com/file/d/1GR9V-oornUta-WEGC3FHpZlaRoP9_u8_/view', // Barbie Moda e Magia
+  '71': 'https://drive.google.com/file/d/1rC1xSbrY6iZvgr_KqGMIMrLF7UxcJmZ-/view', // Os Incríveis
+  '72': 'https://drive.google.com/file/d/1XMOVDNUYoGd9pDi1n1s_Fj47bz6rHxtW/view', // A Hora Do Pesadelo [1984]
+  '73': 'https://drive.google.com/file/d/16yx5Vfkwncg1aQaliLTJBZ17OpINDCLa/view', // A Hora Do Pesadelo 2
+  '74': 'https://drive.google.com/file/d/1H_x2XlzqBEV8RMuvcIoN9v6dWNUf0mT1/view', // A Hora Do Pesadelo 3
+  '75': 'https://drive.google.com/file/d/1po2Vu8IF83VDUA3KpzmPb_exU5gmurD1/view', // A Hora Do Pesadelo 5
+  '76': 'https://drive.google.com/file/d/1LP4e5RhIviUB5enme3eLd-noL_cnvjkP/view', // A Hora Do Pesadelo 7
+  '77': 'https://drive.google.com/file/d/1oGvK-mGYZVxgMDR4gxQzPP_c_unfDZ1v/view', // A Hora Do Pesadelo 6
+  '78': 'https://drive.google.com/file/d/1F-7oP5_eMgPq31iNZGNO8OWYQ5nJhxEI/view', // Pulp Fiction
+  '79': 'https://drive.google.com/drive/folders/1-5JKvNraYzHZ3yzNqEvlTfXKi6ml_Y95', // Bastardos Inglórios (2009)
+  '80': 'https://drive.google.com/file/d/12Hezdl4YOnRqhzlmaL3HI6JDTlEP84fK/view', // Os Oito Odiados
+  '81': 'https://drive.google.com/file/d/1UI67qgfkii2KJH4QpvA-tqaJBkqxdR-o/view', // Django Livre
+  '82': 'https://drive.google.com/drive/folders/1jby8Na2Ocro1sk55LDW_Pb8VuSuW5UtN', // Joker
+  '83': 'https://drive.google.com/file/d/1T4HKvX9GQHt2xde5xkdFN8QshTll3de-/view', // King Kong
+  '84': 'https://drive.google.com/file/d/1pEZ6PuxoaFBRT6UZWJ5ZZGLuXKOI0JMS/view', // Duro De Matar
+  '85': 'https://drive.google.com/file/d/1q-pLukJaiYHM9FJM3zseoO-qaQ2FFhk1/view', // Duro De Matar 2
+  '86': 'https://drive.google.com/file/d/1rgyZCuKMcqA5NoV2S4rkpPzJOsX2HS9v/view', // Top Gun (1986)
+  '87': 'https://drive.google.com/file/d/1t7SkTjj90i1sTugX8cMlHuABUt-njH97/view', // O Lobo de Wall Street
+  '88': 'https://drive.google.com/file/d/1gJTvvjTc8W0gLQm7l7uz88mq-Gm-hs-g/view', // Midsommar (2019)
+  '89': 'https://drive.google.com/file/d/1--I4LM6zwHpQGkoooD29-MghhTDw6Gj-/view', // Esposa de Mentirinha
+  '90': 'https://drive.google.com/file/d/1-1n95EkY7mwplqUPNfsO6B-BsU0V7lqG/view', // Como Se Fosse A Primeira Vez
+  '90': 'https://drive.google.com/file/d/1HDJD-8Pl1dBWmc7qvZZ19qUvhUHhP7lh/view', // Garota Infernal
+  '91': 'https://drive.google.com/file/d/1KEpWywqfjC-ISUrxmSXdSlZFu9NW8VM7/view', // Minha Mae e uma Peca 3
+  '92': 'https://drive.google.com/file/d/15ONExIy9i81JQgRDvKxBrV3D9C0sT65b/view', // Minha Mãe É Uma Peça 2
+  '93': 'https://drive.google.com/file/d/1QpMo7sU1G0xLhnEaJkkpIsivFWfmQ9wU/view', // Minha Mãe É Uma Peça
+  '94': 'https://drive.google.com/file/d/1flsUD1t85XPOGIvytp_upi864jQFMaB_/view', // O Destino De Júpiter
+  '95': 'https://drive.google.com/file/d/1nKPdK1pLFuIY3wlyOdhBPoqjYeAEhqQb/view', // O Garoto Da Casa Ao Lado
+  '96': 'https://drive.google.com/file/d/1kiQOP6gokDnHYd0K8TD53K8tDN0BE1_D/view', // O Fada Do Dente
+  '97': 'https://drive.google.com/file/d/11z123oqcmyE7nRweLjQnbcgecgZmKdz7/view', // O Pequeno Stuart Little 2
+  '98': 'https://drive.google.com/file/d/1y7DK4HUzYh2-yxbh4T9w1S87O2f__sId/view', // O Pequeno Stuart Little
+  '99': 'https://drive.google.com/file/d/1afYKEjN3kJE4rsttZzgqJLVhf-jtbVsH/view', // O Lado Bom Da Vida
+  '100': 'https://drive.google.com/file/d/1sd9uWwqWmhS0h8Exo6eMsaH_eBRCRbUacw/view', // Orgulho e Preconceito
+  '101': 'https://drive.google.com/file/d/1TO6jGZU8UqGjS2mJuL1gkSNoHDqnsqvs/view', // Os Flintstones Em Viva Rock Vegas
+  '102': 'https://drive.google.com/file/d/138xUd2NeTpxMqULH_4S-3xawVMmTdlHy/view', // S.O.S. - Mulheres Ao Mar 2
+  '103': 'https://drive.google.com/file/d/11WTKB8FuSIOvPnZMPnKhFTYKUynRbXLK/view', // S.O.S. - Mulheres Ao Mar
+  '104': 'https://drive.google.com/file/d/1j29JFSEB96HrHqDA6HumVy6axr5Nwxc5/view', // Quase.18
+  '105': 'https://drive.google.com/file/d/1KIMRnmjFyKCKWSTJddFTT12EYvkk8ZYc/view', // Quatro Vidas De Um Cachorro
+  '106': 'https://drive.google.com/file/d/1wQipOrh7j2ek5TLQgJmr6NQhekFjvdJM/view', // Por lugares incriveis
+  '107': 'https://drive.google.com/file/d/1tpfuJQLE_Jf73fbjBsmQfYev4KBYG6hK/view', // Ponte Para Terabítia
+  '108': 'https://drive.google.com/file/d/1dyVE5ELOHcpWx170G4WxoaifBHZhlldw/view', // Para Sempre
+  '109': 'https://drive.google.com/file/d/1Juhjp5Us4482ZmdobOZsTa0nIhu2Yft3/view', // Para Todos Os Garotos Que Já Amei
+  '110': 'https://drive.google.com/file/d/1TCQdciMVnG5AcvvOWrH-wi4Ob_PhdsmK/view', // Para Todos Os Garotos ainda amo voce
+  '111': 'https://drive.google.com/file/d/1xLWa9Kn9IbcM5X5R9aV7G4BdTBBTFwIr/view', // Pica-Pau o filme
+  '112': 'https://drive.google.com/file/d/1VPe0781XtL3l-WVqe326foHSrUlHCAqc/view', // Pequenos Invasores
+  '113': 'https://drive.google.com/file/d/1u10S2mkKZvOkK7gF1QcpggUFS2ifyxPb/view', // Rei Arthur - A Lenda Da Espada
+  '114': 'https://drive.google.com/file/d/1_FU_X41pma5lONPADhj4Q2zNzrzfY05B/view', // Turma.da.Monica.Lacos
+  '115': 'https://drive.google.com/drive/u/0/folders/164l_tkOjRZ003T86wwqOD03mdBu9OwWt', // Rick and Morty
+  '116': 'https://drive.google.com/drive/u/0/folders/14upZuDLVpEoz1OP5RjP6-qX_VPhTu7f_', // The boys
+  '117': 'https://drive.google.com/drive/u/0/folders/15PqqXyjEowtKho_RyEO3dRPV1JywRnbo', // Vikings
+  '118': 'https://drive.google.com/file/d/1ErACznxHssFLN0fcC5VLwtgVLGMJ1wxZ/view', // Pequenos.Espioes.2
+  '119': 'https://drive.google.com/file/d/126gMLvGLGfK3OlXOKEvSvbOLWlUNbmVV/view', // Pequenos.Espioes.3
+  '120': 'https://drive.google.com/file/d/1ZTMrOccuqT0QpufGOUTpzH9gAA7AaFqx/view', // Pequenos.Espioes.4
+  '121': 'https://drive.google.com/file/d/1uz-y7oeXwMBTLmTY70ZpI01hZ0Ua3epM/view', // Táxi [2004]
+  '122': 'https://drive.google.com/file/d/10JwNq24dgSh2jJpM5rvRGLhSAVGbEo8f/view', // Super-Herói - O Filme [2008]
+  '123': 'https://drive.google.com/file/d/11AfOdn6PCekYap1FnIh7d49RzRw8x7io/view', // Todo Poderoso [2003]
+  '124': 'https://drive.google.com/file/d/16nr7kLnln8zOo46nzcOGoSih0xj4MjeV/view', // Ted 2 [2015]
+  '125': 'https://drive.google.com/file/d/15FkG8zb21FuZim31g458nusoD5As9muN/view', // Ted [2012]
+  '126': 'https://drive.google.com/drive/u/0/folders/10QVCb14pAWod2rQ67n1BlLocP71yF8Ez', // Transformers
+  '127': 'https://drive.google.com/drive/u/0/folders/10dZOG0CeFd1TSEG7aoO-eK82jxenRwvT', // Velozes e furiosos
+  '128': 'https://drive.google.com/file/d/1BaL0LP6abB6x9JgKA2wJkfQIMAi_AfB-/view', // Troia [2004]
+  '129': 'https://drive.google.com/file/d/1KM4lBk8iCXTTBSHnV3z4vqbMV4zn9vNP/view', // Sala.de.Fuga.2019
+  '130': 'https://drive.google.com/file/d/1cUXKjN9zW98AX13knOyhWpwtxBTYX3HE/view', // Destruição Final O Último Refúgio
+  '131': 'https://drive.google.com/file/d/1nl1U6JgOFIR_Ox3ASWNth3Eo7VvPeJdt/view', // Lendas do Crime
+  '132': 'https://drive.google.com/file/d/1LssEn3sXIrkj2cIu6KlzRkNpFNqXrLG1/view', // Edward Maos de Tesoura 1990
+  '133': 'https://drive.google.com/file/d/1Ur_nf2MtyRwrrgmUECUh9ZBuLwvZ4gtZ/view', // A fantástica fábrica de chocolate
+  '134': 'https://drive.google.com/drive/u/0/folders/11t_KiAWc_FYk1plGq5WXz3JoArLk2nMk', // Black Mirror
+  '135': 'https://drive.google.com/drive/u/0/folders/1Nx8kyPEbBT2b_fu0XDNvm-HYSR6u6f2J', // Alita Anjo de Combate
+  '136': 'https://drive.google.com/file/d/12YN2HyMRm9Guemn-LG-fiIw90Ah8PRbU/view', // Sexta-Feira Muito Louca
+  '137': 'https://drive.google.com/file/d/1J4sBejfxQMpIvUcGgBSxYMWfGv8X3B6h/view', // Coraline E O Mundo Secreto
+  '138': 'https://drive.google.com/file/d/1tQfc5kyTg3_mlhpVAMvJQJUTz-z9ExFf/view', // O Diário Da Princesa
+  '139': 'https://drive.google.com/file/d/1RtkQfOTMjYfXYTgKNY2VuLgcfGY-Gqcc/view', // O Diário Da Princesa 2
+  '140': 'https://drive.google.com/file/d/1avm4yXd2tg1lZKy00yZRknboNv2Dxqpi/view', // As Branquelas
+  '141': 'https://drive.google.com/file/d/1iEXh5s2vkgQ3WZD3ehGWca6eRaIMpUUj/view', // Valente
+  '142': 'https://drive.google.com/file/d/15uFimcJaFy3XmTqayFkfcEcVzpWi086M/view', // O_Farol_2019
+  '143': 'https://drive.google.com/file/d/1WidKZNRBw8G8uR5ASIQRfxhQT8lNxcLW/view', // A morte está de parabéns
+  '144': 'https://drive.google.com/file/d/1joG0ZSXO5TGu05cyzK5107SVBik1Xor1/view', // Crush.Amor.Colorido.Dublado
+  '145': 'https://drive.google.com/file/d/1GIrmOTbXOAQoMpMoCEwM9ZYkhguld4xP/view', // Bohemian Rhapsody
+  '146': 'https://drive.google.com/file/d/1cGSEO0tEPg44Yt1AcVXpNgdzMOXXZ64F/view', // Garota.Infernal
+  '147': 'https://drive.google.com/file/d/1VUGd3ZbWTlfMR94hgflhDN93kKTSqAX8/view', // Era uma vez em Hollywood
+  '148': 'https://drive.google.com/file/d/1JyOkpN1Iz9vW_s3OxLgx06gtal1O2mPW/view', // Drácula - A História Nunca Contada
+  '149': 'https://drive.google.com/file/d/0B5eZgf1xRrOlQk1VcVJFTktielk/view?resourcekey=0-BB214iiIm6sN8wxPO24UdQ', // Golpe duplo
+  '150': 'https://drive.google.com/drive/u/0/folders/12XCde9TVEQxXANZvZ1wv3yitOXp4mbIJ', // Se ela dança eu danço
+  '151': 'https://drive.google.com/file/d/1SYYYMxuNTrUnz4nEvcYjP0ewGFepVlKf/view', // Arlequina e sua Emancipação Fantabulosa
+  '152': 'https://drive.google.com/file/d/1-bKa20BhtGoHHuQpFGm-TP7Np_kfWvok/view', // O Menino Do Pijama Listrado
+  '153': 'https://drive.google.com/file/d/1cEt2SPaF31P_CKuKTys5PLwwYQI6gZq9/view', // Eu Sou O Número Quatro
+  '154': 'https://drive.google.com/file/d/10aAcZ_QWD_5R_-N4WEJeM9hhCoRS7HdL/view', // Crepúsculo (Amanhecer part.1)
+  '155': 'https://drive.google.com/file/d/1-nRydV_Hjr_LIMedC_4YvoT5eeGR0wxK/view', // Crepúsculo (Eclipse)
+  '156': 'https://drive.google.com/file/d/1-meneFB5EKxZE3b90JkCTCI69gU67f7_/view', // Crepúsculo (Lua Nova)
+  '157': 'https://drive.google.com/file/d/14ooBb3YeIQzhtNxgwt8C4uSn_P3BUULP/view', // Crepusculo
+  '158': 'https://drive.google.com/file/d/1NawKoXfJE6G7qIuiaOrfULpRDN2P1xTS/view', // Venom 2018
+  '159': 'https://drive.google.com/file/d/1Y-11TQC7gHQAWtF181VqJqBwTW765fop/view', // Warcraft encontro de dois mundos
+  '160': 'https://drive.google.com/file/d/1N0oQ253pRmygRT91DNS3yXzmsyDJ0tQs/view', // Vidro [2019]
+  '161': 'https://drive.google.com/file/d/1VDzqX-R5ShtsP9Dx2_fuFlAjdx_uTU2N/view', // Viagem 2 - A Ilha Misteriosa
+  '162': 'https://drive.google.com/file/d/1EXkz2ZhUuKbqXkCW4ghYCh1IC5R7bOJX/view', // Viagem Ao Centro Da Terra
+  '163': 'https://drive.google.com/file/d/1JmtAXBVYbgpmDYKduddTYoApTQFIZy3B/view', // Os Croods
+  '164': 'https://drive.google.com/file/d/1HRcxSslGLyX66sEOTHkZ3w9EznexNR2f/view', // 17 Outra Vez
+  '165': 'https://drive.google.com/file/d/14k0g4SRVxae_78mIJInHzetV0DbZkjhb/view', // 12 Anos De Escravidão
+  '166': 'https://drive.google.com/file/d/1abkKtm9MvEloFyU89MoTbNxZ6C9I2xfk/view', // 10 Coisas Que Eu Odeio Em Você
+  '167': 'https://drive.google.com/file/d/11x6l-QHDqZQZphYcg8idT0kasIlaWFSu/view', // Motoqueiro Fantasma
+  '168': 'https://drive.google.com/file/d/1tb4JL3zNq-Jjorl4maWt6DV7ejWi9sfD/view', // Bruna Surfistinha
+  '169': 'https://drive.google.com/file/d/1EGMDlIvqzlpipAwBsr_6uACmn5PaEvrM/view', // Tropa.de.Elite.Nacional.
+  '170': 'https://drive.google.com/file/d/12rQFTeHWtE6w3mI5tO65_4iTQl9Twx01/view', // Parasita
+  '171': 'https://drive.google.com/file/d/1WGA2OqhydXouaG5b3Ra1bCKPlUWJMxWA/view', // The.Northman
+  '172': 'https://drive.google.com/file/d/1O0VZMG-zzt0fSt5gj-V-7ZI8DollPHM1/view', // Amor de aluguel
+  '173': 'https://drive.google.com/drive/folders/1dyet293QCGDTzd7dfnAvPEkyab8wXcfq', // Homem Aranha Andrew Garfield filmes
+};
+        // Função para abrir o anúncio
+        function openAdLink() {
+            window.open("https://s.shopee.com.br/9pQOdDac2b", "_blank");
+            document.getElementById("btnOutroLink").disabled = false;
+        }
+
+        // abrir o link do filme
+        function openAnotherLink() {
+            if (filmeId && filmes[filmeId]) {
+                window.open(filmes[filmeId], "_blank");
+            } else {
+                alert('Filme não encontrado!');
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+<! ?filme=1 so usar isso no final da url porem mudar o numero de filme pra cada filme
